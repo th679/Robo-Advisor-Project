@@ -16,7 +16,12 @@ parsed_response = json.loads(response.text)
 run_date = datetime.datetime.now()
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
-latest_close = parsed_response["Time Series (Daily)"][last_refreshed]["4. close"]
+tsd = parsed_response["Time Series (Daily)"]
+dates = list(tsd.keys())
+sorted_dates = sorted(dates, reverse = True)
+latest_day = sorted_dates[0]
+
+latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
 
 
 usd = "${0:,.2f}"
