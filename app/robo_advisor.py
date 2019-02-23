@@ -16,17 +16,20 @@ parsed_response = json.loads(response.text)
 run_date = datetime.datetime.now()
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
+latest_close = parsed_response["Time Series (Daily)"][last_refreshed]["4. close"]
 
+
+usd = "${0:,.2f}"
 
 print("-----------------------")
 print("STOCK SYMBOL: AMZN")
-print("RUN AT: " + run_date.strftime("%Y-%m-%d %I:%M:%S %p"))
+print("RUN AT: " + run_date.strftime("%Y-%m-%d %I:%M:%S %p")) #adapted from my shopping cart project
 print("LATEST DATA FROM: " + last_refreshed)
 
 print("-----------------------")
 print("CRUNCHING THE DATA...")
 
 print("-----------------------")
-print("LATEST CLOSING PRICE: $1,259.19")
+print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
 print("RECENT HIGH: ")
 print("RECENT LOW: ")
