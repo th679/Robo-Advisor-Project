@@ -7,6 +7,8 @@
 import requests
 import json
 import datetime
+import csv
+import os
 
 request_url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo"
 response = requests.get(request_url)
@@ -55,3 +57,20 @@ print("-----------------------")
 print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
 print("RECENT HIGH: " + usd.format(recent_high))
 print("RECENT LOW: " + usd.format(recent_low))
+
+csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
+print("WRITING DATA TO CSV: " + csv_file_path)
+
+csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
+with open(csv_file_path, "w") as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames = csv_headers)
+    writer.writeheader()
+    writer.writerow({
+        "timestamp":"",
+        "open": "",
+        "high": "",
+        "low": "",
+        "close": "",
+        "volume": ""
+    })
+
