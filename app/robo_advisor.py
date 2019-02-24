@@ -4,13 +4,19 @@
 
 # TODO: write some Python code here to produce the desired functionality...
 
+from dotenv import load_dotenv
 import requests
 import json
 import datetime
 import csv
 import os
 
-request_url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo"
+load_dotenv()
+
+api_key = os.environ.get("my_API_key")
+symbol = "MSFT"
+
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 response = requests.get(request_url)
 
 parsed_response = json.loads(response.text)
@@ -75,4 +81,4 @@ with open(csv_file_path, "w") as csv_file:
             "close": daily_prices["4. close"],
             "volume": daily_prices["5. volume"]
         })
-
+#adapted from Project Walkthrough
