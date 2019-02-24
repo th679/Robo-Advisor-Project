@@ -28,9 +28,18 @@ high_prices = []
 for date in dates:
     high_price = tsd[date]["2. high"]
     high_prices.append(float(high_price))
+#adapted from Project Walkthrough
 
 recent_high = max(high_prices)
 
+
+low_prices = []
+
+for date in dates:
+    low_price = tsd[date]["3. low"]
+    low_prices.append(float(low_price))
+
+recent_low = min(low_prices)
 
 usd = "${0:,.2f}"
 
@@ -45,4 +54,4 @@ print("CRUNCHING THE DATA...")
 print("-----------------------")
 print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
 print("RECENT HIGH: " + usd.format(recent_high))
-print("RECENT LOW: ")
+print("RECENT LOW: " + usd.format(recent_low))
