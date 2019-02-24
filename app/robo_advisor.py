@@ -67,6 +67,10 @@ recent_low = min(low_prices)
 high_threshold = recent_low * 1.05
 medium_threshold = recent_low * 1.10
 low_threshold = recent_low * 1.20
+low_dontbuy = recent_low * 1.25
+medium_dontbuy = recent_low * 1.30
+
+
 percent_change = (float(latest_close)/recent_low) - 1
 above_close = '{:.1%}'.format(percent_change)
 
@@ -82,10 +86,18 @@ elif float(latest_close) <= low_threshold:
     decision = "BUY"
     confidence = "LOW"
     explanation = "The stock's latest closing price is 10 to 20% above the recent low."
+elif float(latest_close) <= low_dontbuy:
+    decision = "DON'T BUY"
+    confidence = "LOW"
+    explanation = "The stock's latest closing price is 20 to 25% above the recent low."
+elif float(latest_close) <= medium_dontbuy:
+    decision = "DON'T BUY"
+    confidence = "MEDIUM"
+    explanation = "The stock's latest closing price is 25 to 30% above the recent low."
 else:
     decision = "DON'T BUY"
     confidence = "HIGH"
-    explanation = "The stock's latest closing price more than 20% above the recent low."
+    explanation = "The stock's latest closing price more than 30% above the recent low."
 
 
 usd = "${0:,.2f}"
