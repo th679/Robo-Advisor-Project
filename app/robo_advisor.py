@@ -13,11 +13,22 @@ import os
 
 load_dotenv()
 
+
+symbol = input("Please input a stock symbol: ")
+
+if not symbol.isalpha():
+    print("Please enter a proper stock symbol Ex. MSFT")
+    quit()
+
 api_key = os.environ.get("my_API_key")
-symbol = "MSFT"
 
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 response = requests.get(request_url)
+
+if 'Error' in response.text:
+    print("Could not find trading data for that stock symbol")
+    quit()
+    #adapted from https://github.com/hiepnguyen034/robo-stock/blob/master/robo_advisor.py
 
 parsed_response = json.loads(response.text)
 
@@ -51,22 +62,7 @@ recent_low = min(low_prices)
 
 usd = "${0:,.2f}"
 
-print("-----------------------")
-print("STOCK SYMBOL: AMZN")
-print("RUN AT: " + run_date.strftime("%Y-%m-%d %I:%M:%S %p")) #adapted from my shopping cart project
-print("LATEST DATA FROM: " + last_refreshed)
-
-print("-----------------------")
-print("CRUNCHING THE DATA...")
-
-print("-----------------------")
-print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
-print("RECENT HIGH: " + usd.format(recent_high))
-print("RECENT LOW: " + usd.format(recent_low))
-
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
-print("WRITING DATA TO CSV: " + csv_file_path)
-
 csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 with open(csv_file_path, "w") as csv_file:
     writer = csv.DictWriter(csv_file, fieldnames = csv_headers)
@@ -82,3 +78,23 @@ with open(csv_file_path, "w") as csv_file:
             "volume": daily_prices["5. volume"]
         })
 #adapted from Project Walkthrough
+
+
+
+
+
+print("-----------------------")
+print("STOCK SYMBOL: " + symbol)
+print("RUN AT: " + run_date.strftime("%Y-%m-%d %I:%M:%S %p")) #adapted from my shopping cart project
+print("LATEST DATA FROM: " + last_refreshed)
+
+print("-----------------------")
+print("CRUNCHING THE DATA...")
+
+print("-----------------------")
+print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
+print("RECENT HIGH: " + usd.format(recent_high))
+print("RECENT LOW: " + usd.format(recent_low))
+print("-----------------------")
+
+print("WRITING DATA TO CSV: " + csv_file_path)
