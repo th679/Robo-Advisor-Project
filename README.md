@@ -2,7 +2,7 @@
 
 Original project description: https://github.com/prof-rossetti/georgetown-opim-243-201901/blob/master/projects/robo-advisor.md 
 
-##Prerequisites
+## Prerequisites
 
 Anaconda 3.7
 Python 3.7
