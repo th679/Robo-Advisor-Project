@@ -64,6 +64,30 @@ recent_high = max(high_prices)
 
 recent_low = min(low_prices)
 
+high_threshold = recent_low * 1.05
+medium_threshold = recent_low * 1.10
+low_threshold = recent_low * 1.20
+percent_change = (float(latest_close)/recent_low) - 1
+above_close = '{:.1%}'.format(percent_change)
+
+if float(latest_close) <= high_threshold:
+    decision = "BUY"
+    confidence = "HIGH"
+    explanation = "The stock's latest closing price is less than 5% above the recent low."
+elif float(latest_close) <= medium_threshold:
+    decision = "BUY"
+    confidence = "MEDIUM"
+    explanation = "The stock's latest closing price is 5 to 10% above the recent low."
+elif float(latest_close) <= low_threshold:
+    decision = "BUY"
+    confidence = "LOW"
+    explanation = "The stock's latest closing price is 10 to 20% above the recent low."
+else:
+    decision = "DON'T BUY"
+    confidence = "HIGH"
+    explanation = "The stock's latest closing price more than 20% above the recent low."
+
+
 usd = "${0:,.2f}"
 
 
@@ -99,6 +123,14 @@ print("RECENT HIGH: " + usd.format(recent_high))
 print("RECENT LOW: " + usd.format(recent_low))
 print("-----------------------")
 
+print("RECOMMENDATION: ")
+print("DECISION: " + decision)
+print("CONFIDENCE LEVEL: " + confidence)
+print("EXPLANATION: " + explanation)
+print("The closing price is " + above_close + " above the recent low.")
+print("-----------------------")
+
+
 print("WRITING DATA TO CSV: " + csv_file_path)
 
 
@@ -119,6 +151,7 @@ ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "${0:,.2f}".
 #adapted from https://preinventedwheel.com/matplotlib-thousands-separator-1-step-guide/
 
 ax.xaxis.set_major_locator(plt.MaxNLocator(12))
+#adapted from https://jakevdp.github.io/PythonDataScienceHandbook/04.10-customizing-ticks.html 
 
 plt.plot(dates_graph, closing_prices)
 plt.xlabel('Day')
