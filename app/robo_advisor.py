@@ -17,11 +17,19 @@ run_date = datetime.datetime.now()
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
 tsd = parsed_response["Time Series (Daily)"]
-dates = list(tsd.keys())
+dates = list(tsd.keys()) #adapted from Project Walkthrough https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
 sorted_dates = sorted(dates, reverse = True)
 latest_day = sorted_dates[0]
 
 latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
+
+high_prices = []
+
+for date in dates:
+    high_price = tsd[date]["2. high"]
+    high_prices.append(float(high_price))
+
+recent_high = max(high_prices)
 
 
 usd = "${0:,.2f}"
@@ -36,5 +44,5 @@ print("CRUNCHING THE DATA...")
 
 print("-----------------------")
 print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
-print("RECENT HIGH: ")
+print("RECENT HIGH: " + usd.format(recent_high))
 print("RECENT LOW: ")
