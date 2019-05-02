@@ -43,6 +43,16 @@ def transform_response(parsed_response):
         rows.append(row)
     return rows
 
+def write_to_csv(file_path, rows):
+    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
+    with open(file_path, "w") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames = csv_headers)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+            #adapted from Project Walkthrough
+    return True
+
 
 symbol = input("Please input a stock symbol: ")
 
@@ -112,13 +122,7 @@ else:
 
 
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices_" + symbol + ".csv")
-csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
-with open(csv_file_path, "w") as csv_file:
-    writer = csv.DictWriter(csv_file, fieldnames = csv_headers)
-    writer.writeheader()
-    for row in data:
-        writer.writerow(row)
-#adapted from Project Walkthrough
+write_to_csv(csv_file_path, data)
 
 
 print("-----------------------")
