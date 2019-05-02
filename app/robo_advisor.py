@@ -30,34 +30,43 @@ def get_response(symbol):
         #adapted from https://github.com/hiepnguyen034/robo-stock/blob/master/robo_advisor.py
     return parsed_response
 
+def transform_response(parsed_response):
+    tsd = parsed_response["Time Series (Daily)"]
+    rows = []
+    for date, daily_prices in tsd.items():
+        row = {"timestamp": date,
+            "open": daily_prices["1. open"],
+            "high": daily_prices["2. high"],
+            "low": daily_prices["3. low"],
+            "close": daily_prices["4. close"],
+            "volume": daily_prices["5. volume"]}
+        rows.append(row)
+    return rows
+
+
 symbol = input("Please input a stock symbol: ")
 
 if not symbol.isalpha():
     print("Please enter a proper stock symbol Ex. MSFT")
     quit()
 
-
 parsed_response = get_response(symbol)
 
 run_date = datetime.datetime.now()
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
+data = transform_response(parsed_response)
 
-tsd = parsed_response["Time Series (Daily)"]
-dates = list(tsd.keys()) #adapted from Project Walkthrough https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
-sorted_dates = sorted(dates, reverse = True)
-latest_day = sorted_dates[0]
-
-latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
+latest_close = data[0]["close"]
 
 
 high_prices = []
 low_prices = []
 
-for date in dates:
-    high_price = tsd[date]["2. high"]
+for row in data:
+    high_price = row["high"]
     high_prices.append(float(high_price))
-    low_price = tsd[date]["3. low"]
+    low_price = row["low"]
     low_prices.append(float(low_price))
 
 #adapted from Project Walkthrough
@@ -107,16 +116,8 @@ csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 with open(csv_file_path, "w") as csv_file:
     writer = csv.DictWriter(csv_file, fieldnames = csv_headers)
     writer.writeheader()
-    for date in dates:
-        daily_prices = tsd[date]
-        writer.writerow({
-            "timestamp": date,
-            "open": daily_prices["1. open"],
-            "high": daily_prices["2. high"],
-            "low": daily_prices["3. low"],
-            "close": daily_prices["4. close"],
-            "volume": daily_prices["5. volume"]
-        })
+    for row in data:
+        writer.writerow(row)
 #adapted from Project Walkthrough
 
 
@@ -150,10 +151,14 @@ print("----------------")
 print("GENERATING LINE GRAPH...")
 
 closing_prices = []
-dates_graph = sorted(dates)
+dates_graph = []
 
-for date in dates:
-    closing_price = tsd[date]["4. close"]
+for date in data:
+    date = date["timestamp"]
+    dates_graph.append(date)
+
+for date in data:
+    closing_price = date["close"]
     closing_prices.append(float(closing_price))
 
 fig, ax = plt.subplots()
