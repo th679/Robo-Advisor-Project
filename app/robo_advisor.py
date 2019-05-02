@@ -12,6 +12,24 @@ import matplotlib.ticker as ticker
 
 load_dotenv()
 
+def to_usd(price):
+    return "${0:,.2f}".format(price)
+
+def compile_url(symbol, api_key):
+    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
+    return request_url
+
+def get_response(symbol):
+    api_key = os.environ.get("my_API_key")
+    url = compile_url(symbol, api_key)
+    response = requests.get(url)
+    parsed_response = json.loads(response.text)
+    if 'Error' in response.text:
+        print("Could not find trading data for that stock symbol")
+        quit()
+        #adapted from https://github.com/hiepnguyen034/robo-stock/blob/master/robo_advisor.py
+    return parsed_response
+
 symbol = input("Please input a stock symbol: ")
 
 if not symbol.isalpha():
@@ -19,19 +37,7 @@ if not symbol.isalpha():
     quit()
 
 
-api_key = os.environ.get("my_API_key")
-
-
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
-response = requests.get(request_url)
-
-if 'Error' in response.text:
-    print("Could not find trading data for that stock symbol")
-    quit()
-    #adapted from https://github.com/hiepnguyen034/robo-stock/blob/master/robo_advisor.py
-
-
-parsed_response = json.loads(response.text)
+parsed_response = get_response(symbol)
 
 run_date = datetime.datetime.now()
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
@@ -96,9 +102,6 @@ else:
     explanation = "The stock's latest closing price more than 30% above the recent low."
 
 
-usd = "${0:,.2f}"
-
-
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices_" + symbol + ".csv")
 csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 with open(csv_file_path, "w") as csv_file:
@@ -126,9 +129,9 @@ print("-----------------------")
 print("CRUNCHING THE DATA...")
 
 print("-----------------------")
-print("LATEST CLOSING PRICE: " + usd.format(float(latest_close)))
-print("RECENT HIGH: " + usd.format(recent_high))
-print("RECENT LOW: " + usd.format(recent_low))
+print("LATEST CLOSING PRICE: " + to_usd(float(latest_close)))
+print("RECENT HIGH: " + to_usd(recent_high))
+print("RECENT LOW: " + to_usd(recent_low))
 print("-----------------------")
 
 print("RECOMMENDATION: ")
@@ -155,7 +158,7 @@ for date in dates:
 
 fig, ax = plt.subplots()
 
-ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "${0:,.2f}".format(int(x))))
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: to_usd(int(x))))
 #adapted from https://preinventedwheel.com/matplotlib-thousands-separator-1-step-guide/
 
 ax.xaxis.set_major_locator(plt.MaxNLocator(12))
