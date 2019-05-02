@@ -14,9 +14,7 @@ Use Anaconda to create and activate a new virtual environment.
 Install package dependencies:
 
 ```py
-pip install requests 
-pip install python-dotenv 
-pip install matplotlib
+pip install -r requirements.txt
 ```
 
 ## Setup
@@ -35,3 +33,13 @@ Run the recommendation script:
 ```py
 python app/robo_advisor.py
 ```
+
+## Testing
+
+To run automated tests run the following script:
+
+```py
+pytest
+```
+
+It is also recommended that you integrate your repository with a continuous integration (CI) platform to run the automated tests when the repository is updated. The recommended CI platform is the [Travis CI](https://travis-ci.com/) platform.
