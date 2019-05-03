@@ -25,7 +25,7 @@ SKIP_REASON = "to avoid issuing requests from the CI server"
 
 def test_compile_url():
     url = compile_url("AAPL", api_key)
-    assert url == "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey={api_key}"
+    assert url == f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey={api_key}"
 
 
 @pytest.mark.skipif(CI_ENV==True, reason=SKIP_REASON)
@@ -77,10 +77,7 @@ def test_write_csv():
         {'timestamp': '2019-04-30', 'open': '203.0600', 'high': '203.4000', 'low': '199.1100', 'close': '200.6700', 'volume': '46534923'},
         {'timestamp': '2019-04-29', 'open': '204.4000', 'high': '205.9700', 'low': '203.8600', 'close': '204.6100', 'volume': '22204716'}
     ]
-    csv_file_path = os.path.join(os.path.dirname(__file__), "..", "sample_data", "sample.csv")
+    csv_file_path = os.path.join(os.path.dirname(__file__), "sample_data", "sample.csv")
     result = write_to_csv(csv_file_path, example_data)
     assert result == True
     assert os.path.isfile(csv_file_path) == True
-    with open(csv_file_path, "r") as csv_file:
-        reader = csv.DictReader(csv_file)
-        assert reader == example_data
