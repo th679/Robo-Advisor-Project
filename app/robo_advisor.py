@@ -88,13 +88,6 @@ if __name__ == "__main__":
 
     recent_low = min(low_prices)
 
-    #high_threshold = recent_low * 1.05
-    #medium_threshold = recent_low * 1.10
-    #low_threshold = recent_low * 1.20
-    #low_dontbuy = recent_low * 1.25
-    #medium_dontbuy = recent_low * 1.30
-
-
     percent_change = (float(latest_close)/recent_low) - 1
     above_close = '{:.1%}'.format(percent_change)
 
